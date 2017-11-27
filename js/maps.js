@@ -298,6 +298,24 @@ function oo_add_ruler_element_v(ruler_step, text, ypos, h)
 }
 
 
+// Makes sure only one of radios is checked
+function oo_tlfilter(filter)
+{
+	if (filter==1) { document.getElementById("tlandup").checked = true; document.getElementById("tlonly").checked = false; }
+	if (filter==2) { document.getElementById("tlandup").checked = false; document.getElementById("tlonly").checked = true; }
+}
+function oo_ecfilter(filter)
+{
+	if (filter==1) { document.getElementById("ecandup").checked = true; document.getElementById("econly").checked = false; }
+	if (filter==2) { document.getElementById("ecandup").checked = false; document.getElementById("econly").checked = true; }
+}
+function oo_govfilter(filter)
+{
+	if (filter==1) { document.getElementById("govandup").checked = true; document.getElementById("govonly").checked = false; }
+	if (filter==2) { document.getElementById("govandup").checked = false; document.getElementById("govonly").checked = true; }
+}
+
+
 
 // RENDER MAP!
 function oo_render_map()
@@ -338,14 +356,90 @@ function oo_switchGalaxy()
 
 
 // Filters by techlevel
-function oo_filterByTechlevel()
+function oo_applyFilter()
 {
-	// We render into this container
-	var m = oo_get_maps_render_container();
-	// In case we swiched galaxies...
-	m.innerHTML = "";
+	// Create a filter string
+	var filterStr = "";
+	var empty = true;
 
-	// Renders lines, systems, etc
+	// Depending on whether or not there are filters set, the map is rendered
+	// differently... but only if we have an actual number to filter by.
+	if (document.getElementById("maps_filter_techlevel").value != "-")
+	{
+		var filtertype = 0;
+		if (document.getElementById("tlandup").checked == true) { filtertype = 1; }
+		if (document.getElementById("tlonly").checked == true) { filtertype = 2; }
+
+		filterStr += "techlevel|"+document.getElementById("maps_filter_techlevel").value + "|" + filtertype;
+
+		empty = false;
+	}
+
+	if (document.getElementById("maps_filter_economy").value != "-")
+	{
+		var filtertype = 0;
+		if (document.getElementById("ecandup").checked == true) { filtertype = 1; }
+		if (document.getElementById("econly").checked == true) { filtertype = 2; }
+
+		// Make sure correct dividers are added
+		if (filterStr != "") { filterStr += "|"; }
+
+		filterStr += "economy|"+document.getElementById("maps_filter_economy").value + "|" + filtertype;
+
+		empty = false;
+	}
+
+	if (document.getElementById("maps_filter_government").value != "-")
+	{
+		var filtertype = 0;
+		if (document.getElementById("govandup").checked == true) { filtertype = 1; }
+		if (document.getElementById("govonly").checked == true) { filtertype = 2; }
+
+		// Make sure correct dividers are added
+		if (filterStr != "") { filterStr += "|"; }
+
+		filterStr += "government|"+document.getElementById("maps_filter_government").value + "|" + filtertype;
+
+		empty = false;
+	}
+
+	if (empty == false)
+	{
+		// We render into this container
+		var m = oo_get_maps_render_container();
+		// In case we swiched galaxies...
+		m.innerHTML = "";
+
+		// Renders lines, systems, etc
+		if (window.XMLHttpRequest) {
+			// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			// code for IE6, IE5
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				oo_get_maps_render_container().innerHTML = this.responseText;
+			}
+		};
+
+		xmlhttp.open("GET","inc/rendermap.php?zoom="+oo_maps_zoom+"&mapw="+oo_winW+"&maph="+oo_winH+"&lyrx="+oo_lightyear_ratio_x+"&lyry="+oo_lightyear_ratio_y+"&galaxy="+oo_current_galaxy+"&filters="+filterStr, true);
+			xmlhttp.send();
+	}
+	// The render normally
+	else { oo_render_map(); }
+}
+
+
+// -----------------------------------------------------------------------------
+// SHOW SOLAR SYSTEM INFO
+// -----------------------------------------------------------------------------
+
+function oo_show_systeminfo(systemid)
+{
+	var s = document.getElementById("maps_info_sidebar");
+
 	if (window.XMLHttpRequest) {
 		// code for IE7+, Firefox, Chrome, Opera, Safari
 		xmlhttp = new XMLHttpRequest();
@@ -355,24 +449,22 @@ function oo_filterByTechlevel()
 	}
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
-			oo_get_maps_render_container().innerHTML = this.responseText;
+			s.innerHTML = this.responseText;
 		}
 	};
 
-	// Depending on whether or not there are filters set, the map is rendered
-	// differently
-	if (document.getElementById("tlandup").checked == true)
-	{
-		xmlhttp.open("GET","inc/rendermap.php?zoom="+oo_maps_zoom+"&mapw="+oo_winW+"&maph="+oo_winH+"&lyrx="+oo_lightyear_ratio_x+"&lyry="+oo_lightyear_ratio_y+"&galaxy="+oo_current_galaxy+"&filters=techlevel|"+document.getElementById("maps_filter_techlevel").value+"|1", true);
+	xmlhttp.open("GET","inc/get_system_info.php?id="+systemid, true);
 		xmlhttp.send();
-	}
-	if (document.getElementById("tlonly").checked == true)
-	{
-		xmlhttp.open("GET","inc/rendermap.php?zoom="+oo_maps_zoom+"&mapw="+oo_winW+"&maph="+oo_winH+"&lyrx="+oo_lightyear_ratio_x+"&lyry="+oo_lightyear_ratio_y+"&galaxy="+oo_current_galaxy+"&filters=techlevel|"+document.getElementById("maps_filter_techlevel").value+"|2", true);
-		xmlhttp.send();
-	}
+
+	s.style.display = "inline-block";
 }
 
+function oo_hide_systeminfo()
+{
+	var s = document.getElementById("maps_info_sidebar");
+	s.style.display = "none";
+	s.innerHTML = "";
+}
 
 
 // -----------------------------------------------------------------------------

@@ -177,6 +177,22 @@ function render_connlines()
 }
 
 
+// Renders a normal, or highlighted system
+function render_systemball($highlight, $i, $id, $x, $y)
+{
+	global $svg_systems;
+
+	if ($highlight == false)
+	{
+		$svg_systems = $svg_systems . "<circle id='system_ball_".$i."' onmouseover='oo_show_systemname(".$id.");' onmouseout='oo_hide_systemname();' onclick='oo_show_systeminfo(".$id.");' cx=".$x." cy=".$y." r='5' stroke='none' stroke-width='2' fill='white' />";
+	}
+	if ($highlight == true)
+	{
+		$svg_systems = $svg_systems . "<circle id='system_ball_".$i."' onmouseover='oo_show_systemname(".$id.");' onmouseout='oo_hide_systemname();' onclick='oo_show_systeminfo(".$id.");' cx=".$x." cy=".$y." r='10' stroke='#a95000' stroke-width='2' fill='#ffc600' />";
+	}
+}
+
+
 // This renders out the single solar systems
 function render_systems()
 {
@@ -196,7 +212,7 @@ function render_systems()
 		$system_y = ($coord_y * $oo_ly_step_y);
 
 		// Render all systems as normal
-		$svg_systems = $svg_systems . "<circle id='system_ball_".$i."' onmouseover='oo_show_systemname(".$systemdata[$i-1][0].");' onmouseout='oo_hide_systemname();' cx=".$system_x." cy=".$system_y." r='5' stroke='none' stroke-width='2' fill='white' />";
+		render_systemball(false, $i, $systemdata[$i-1][0], $system_x, $system_y);
 	}
 
 	// Depending on defined filters, we need to render a star differently.
@@ -208,6 +224,7 @@ function render_systems()
 		// Go through filters
 		for ($i=1; $i<=count($filters); $i++)
 		{
+			// Techlevel filter
 			if ($filters[$i-1] == "techlevel")
 			{
 				$andAbove = false;
@@ -224,7 +241,7 @@ function render_systems()
 						if ($systemdata[$j-1][39] >= $filters[$i-0])
 						{
 							// Get raw coordinates
-							$coords_raw = explode(" ", $systemdata[$i-1][8]);
+							$coords_raw = explode(" ", $systemdata[$j-1][8]);
 							// Give us the ints
 							$coord_x = (int)$coords_raw[0];
 							$coord_y = (int)$coords_raw[1];
@@ -233,8 +250,8 @@ function render_systems()
 							$system_x = ($coord_x * $oo_ly_step_x);
 							$system_y = ($coord_y * $oo_ly_step_y);
 
-							// Render all systems as normal
-							$svg_systems = $svg_systems . "<circle id='system_ball_".$i."' onmouseover='oo_show_systemname(".$systemdata[$i-1][0].");' onmouseout='oo_hide_systemname();' cx=".$system_x." cy=".$system_y." r='10' stroke='none' stroke-width='2' fill='green' />";
+							// Render highlighted ball
+							render_systemball(true, $j, $systemdata[$j-1][0], $system_x, $system_y);
 						}
 					}
 					if ($andAbove == false)
@@ -242,7 +259,7 @@ function render_systems()
 						if ($systemdata[$j-1][39] == $filters[$i-0])
 						{
 							// Get raw coordinates
-							$coords_raw = explode(" ", $systemdata[$i-1][8]);
+							$coords_raw = explode(" ", $systemdata[$j-1][8]);
 							// Give us the ints
 							$coord_x = (int)$coords_raw[0];
 							$coord_y = (int)$coords_raw[1];
@@ -252,7 +269,117 @@ function render_systems()
 							$system_y = ($coord_y * $oo_ly_step_y);
 
 							// Render all systems as normal
-							$svg_systems = $svg_systems . "<circle id='system_ball_".$i."' onmouseover='oo_show_systemname(".$systemdata[$i-1][0].");' onmouseout='oo_hide_systemname();' cx=".$system_x." cy=".$system_y." r='10' stroke='none' stroke-width='2' fill='green' />";
+							render_systemball(true, $j, $systemdata[$j-1][0], $system_x, $system_y);
+						}
+					}
+				}
+
+				// Advance filtering
+				$i = $i+3;
+			}
+
+
+			// Government filter
+			if ($filters[$i-1] == "government")
+			{
+				$andAbove = false;
+
+				// Determine how to filter
+				if ($filters[$i+1] == 1) { $andAbove = true; }
+				if ($filters[$i+1] == 2) { $andAbove = false; }
+
+				// Add the stars with highlight
+				for ($j=1; $j<=count($systemdata); $j++)
+				{
+					if ($andAbove == true)
+					{
+						if ($systemdata[$j-1][14] >= $filters[$i-0]) // Column 14 is government
+						{
+							// Get raw coordinates
+							$coords_raw = explode(" ", $systemdata[$j-1][8]);
+							// Give us the ints
+							$coord_x = (int)$coords_raw[0];
+							$coord_y = (int)$coords_raw[1];
+
+							// Convert coordinates into pixel coordinates
+							$system_x = ($coord_x * $oo_ly_step_x);
+							$system_y = ($coord_y * $oo_ly_step_y);
+
+							// Render highlighted ball
+							render_systemball(true, $j, $systemdata[$j-1][0], $system_x, $system_y);
+						}
+					}
+					if ($andAbove == false)
+					{
+						if ($systemdata[$j-1][14] == $filters[$i-0])
+						{
+							// Get raw coordinates
+							$coords_raw = explode(" ", $systemdata[$j-1][8]);
+							// Give us the ints
+							$coord_x = (int)$coords_raw[0];
+							$coord_y = (int)$coords_raw[1];
+
+							// Convert coordinates into pixel coordinates
+							$system_x = ($coord_x * $oo_ly_step_x);
+							$system_y = ($coord_y * $oo_ly_step_y);
+
+							// Render all systems as normal
+							render_systemball(true, $j, $systemdata[$j-1][0], $system_x, $system_y);
+						}
+					}
+				}
+
+				// Advance filtering
+				$i = $i+3;
+			}
+
+
+			// Economy filter
+			if ($filters[$i-1] == "economy")
+			{
+				$andAbove = false;
+
+				// Determine how to filter
+				if ($filters[$i+1] == 1) { $andAbove = true; }
+				if ($filters[$i+1] == 2) { $andAbove = false; }
+
+				// Add the stars with highlight
+				for ($j=1; $j<=count($systemdata); $j++)
+				{
+					if ($andAbove == true)
+					{
+						if ($systemdata[$j-1][13] >= $filters[$i-0]) // Column 13 is economy
+						{
+							// Get raw coordinates
+							$coords_raw = explode(" ", $systemdata[$j-1][8]);
+							// Give us the ints
+							$coord_x = (int)$coords_raw[0];
+							$coord_y = (int)$coords_raw[1];
+
+							// Convert coordinates into pixel coordinates
+							$system_x = ($coord_x * $oo_ly_step_x);
+							$system_y = ($coord_y * $oo_ly_step_y);
+
+							// Render highlighted ball
+							render_systemball(true, $j, $systemdata[$j-1][0], $system_x, $system_y);
+						}
+					}
+					if ($andAbove == false)
+					{
+						if ($systemdata[$j-1][13] == $filters[$i-0])
+						{
+							// Get raw coordinates
+							$coords_raw = explode(" ", $systemdata[$j-1][8]);
+							// Give us the ints
+							$coord_x = (int)$coords_raw[0];
+							$coord_y = (int)$coords_raw[1];
+
+							// Convert coordinates into pixel coordinates
+							$system_x = ($coord_x * $oo_ly_step_x);
+							$system_y = ($coord_y * $oo_ly_step_y);
+
+							// Render all systems as normal
+							render_systemball(true, $j, $systemdata[$j-1][0], $system_x, $system_y);
 						}
 					}
 				}

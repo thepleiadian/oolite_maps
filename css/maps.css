@@ -163,6 +163,19 @@ body
 	padding: 3px;
 }
 
+.maps_goveco_box
+{
+	width: 150px;
+	height: 40px;
+	border-radius: 5px;
+	background-color: rgba(80,80,80,0.7);
+	border: 1px solid #888888;
+	font-family: "Exo";
+	font-size: 24px;
+	color: #eeeeee;
+	padding: 3px;
+}
+
 .maps_tl_box
 {
 	width: 60px;
@@ -203,6 +216,22 @@ body
 	font-size: 16px;
 	color: #cccccc;
 }
+
+.maps_sidebar_systemname
+{
+	font-family: "Exo";
+	font-size: 42px;
+	color: #cccccc;
+	text-decoration: none;
+}
+.maps_goveco_info
+{
+	font-family: "Exo";
+	font-size: 16px;
+	color: #cccccc;
+	text-decoration: none;
+}
+
 
 input[type="checkbox"] {
     display:none;
