@@ -355,7 +355,7 @@ function oo_switchGalaxy()
 }
 
 
-// Filters by techlevel
+// Filters by selected filters
 function oo_applyFilter()
 {
 	// Create a filter string
@@ -537,6 +537,18 @@ function oo_adjust_rulers(e)
 	hv.style.top  = oo_get_maps_container().offsetTop  + "px;";
 	hr.setAttribute("style", "left: " + oo_get_maps_container().offsetLeft + "px;");
 	hv.setAttribute("style", "top: "  + oo_get_maps_container().offsetTop  + "px;");
+}
+
+
+// Display the filter box
+function oo_show_filterbox()
+{
+    document.getElementById("maps_filterbox").style.visibility = "visible";
+}
+
+function oo_hide_filterbox()
+{
+    document.getElementById("maps_filterbox").style.visibility = "hidden";
 }
 
 
