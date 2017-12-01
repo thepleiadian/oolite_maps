@@ -106,7 +106,7 @@ function render_grid()
 
 	// Number of lines to draw
 	$numlines = 256 / $oo_stepping;
-	
+
 	// Horizontal first
 	for ($i=1; $i<=$numlines+1; $i++)
 	{
@@ -132,7 +132,7 @@ function render_connlines()
 	global $systemdata, $connectiondata, $qry, $sql, $rows, $oo_ly_step_x, $oo_ly_step_y, $connlines;
 
 	// First we draw the lines.
-	
+
 	// For that we, once again, need to iterate over the current galaxy:
 	for ($i=1; $i<=$rows; $i++)
 	{
@@ -180,11 +180,11 @@ function render_connlines()
 // Renders a normal, or highlighted system
 function render_systemball($highlight, $i, $id, $x, $y)
 {
-	global $svg_systems;
+	global $svg_systems, $oo_ly_step_x, $oo_ly_step_y, $oo_zoom;
 
 	if ($highlight == false)
 	{
-		$svg_systems = $svg_systems . "<circle id='system_ball_".$i."' onmouseover='oo_show_systemname(".$id.");' onmouseout='oo_hide_systemname();' onclick='oo_show_systeminfo(".$id.");' cx=".$x." cy=".$y." r='5' stroke='none' stroke-width='2' fill='white' />";
+		$svg_systems = $svg_systems . "<circle id='system_ball_".$i."' onmouseover='oo_show_systemname(".$id.");' onmouseout='oo_hide_systemname();' onclick='oo_show_systeminfo(".$id."); oo_showLocationMarkerAt(".$x.", ".$y.");' cx=".$x." cy=".$y." r='5' stroke='none' stroke-width='2' fill='white' />";
 	}
 	if ($highlight == true)
 	{
@@ -389,6 +389,9 @@ function render_systems()
 			}
 		}
 	}
+
+	// Add location marker
+	$svg_systems = $svg_systems . '<circle id="oo_lm_1" cx="100" cy="100" r="20" stroke="#ff9c00" stroke-width="7" fill="none" style="position: absolute; visibility: hidden;" /><circle id="oo_lm_2" cx="100" cy="100" r="7" stroke="#ff9c00" stroke-width="2" fill="none" style="position: absolute; visibility: hidden;" />';
 
 	echo $svg_systems;
 }

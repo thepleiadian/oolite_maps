@@ -1,7 +1,8 @@
 <canvas id="maps_starfield" class="maps_starfield" width=10000 height=10000></canvas>
 
-<div id="maps_container" class="maps_container" >
-	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="maps_render" id="maps_render"></svg>
+<div id="maps_container" class="maps_container">
+	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="maps_render" id="maps_render">
+	</svg>
 </div>
 
 <script> $( function() { $( "#maps_container" ).draggable(); } ); </script>

@@ -26,7 +26,7 @@ var oo_renderwinH = 0;
 // Current galaxy
 var oo_current_galaxy = 0;
 
-var oo_svgNS = "http://www.w3.org/2000/svg";  
+var oo_svgNS = "http://www.w3.org/2000/svg";
 
 // Keep track of mouse
 var oo_mx = 0;
@@ -96,7 +96,7 @@ document.onmousemove = function(e)
 // this line, I know this very friendly entity living in the woods, and he's
 // called Slender Man. Friendly chap. In fact so friendly, that he skips all
 // that crazy nonsense of getting to know each other - he f's you right away.
-// Hard. And chances are he likes you so much he won't stop f'ing you. So... 
+// Hard. And chances are he likes you so much he won't stop f'ing you. So...
 // do us all a favor and leave that line alone.
 window.addEventListener('mousemove', oo_updateMouseLocation, true);
 
@@ -209,7 +209,7 @@ function oo_hide_systemname()
 {
 	oo_get_system_name_box().innerHTML = "";
 	oo_get_system_name_box().style.display = "none";
-	oo_get_system_name_box().setAttribute("style", "display: none");	
+	oo_get_system_name_box().setAttribute("style", "display: none");
 }
 
 
@@ -432,6 +432,29 @@ function oo_applyFilter()
 }
 
 
+// Show the location marker at a specific location
+function oo_showLocationMarkerAt(x, y)
+{
+	// We need to adjust the location of the marker as it is an image file
+	var m1 = document.getElementById("oo_lm_1");
+	var m2 = document.getElementById("oo_lm_2");
+	m1.setAttribute("cx", x);
+	m2.setAttribute("cx", x);
+	m1.setAttribute("cy", y);
+	m2.setAttribute("cy", y);
+	m1.style.visibility = "visible";
+	m2.style.visibility = "visible";
+}
+
+function oo_hideLocationMarker()
+{
+	var m1 = document.getElementById("oo_lm_1");
+	var m2 = document.getElementById("oo_lm_2");
+	m1.style.visibility = "hidden";
+	m2.style.visibility = "hidden";
+}
+
+
 // -----------------------------------------------------------------------------
 // SHOW SOLAR SYSTEM INFO
 // -----------------------------------------------------------------------------
@@ -566,7 +589,7 @@ function getRandom(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 function oo_add_starfield()
-{		
+{
 	var canvas = document.getElementById('maps_starfield'),
 	context = canvas.getContext('2d'),
 	stars = 50000,
